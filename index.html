@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6f7f9">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="内覧チェック">
+<title>内覧チェックリスト</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--text:#17191c;--sub:#626a73;--line:#dfe3e8;--accent:#1268e8;--ok:#18794e;--na:#6c737f;--warn:#a05a00;--danger:#b42318;--shadow:0 1px 3px rgba(0,0,0,.06)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Hiragino Sans","Yu Gothic UI",Meiryo,sans-serif;background:var(--bg);color:var(--text)}
+body{margin:0;background:var(--bg);font-size:17px;line-height:1.5;padding-bottom:calc(110px + env(safe-area-inset-bottom))}
+button,select,input,textarea{font:inherit}
+.sticky{position:sticky;top:0;z-index:20;background:rgba(246,247,249,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:calc(10px + env(safe-area-inset-top)) 14px 10px}
+.title{font-size:21px;font-weight:800;letter-spacing:-.02em}.meta{font-size:13px;color:var(--sub);margin-top:2px}.progress-wrap{margin-top:9px;display:flex;gap:9px;align-items:center}.bar{height:8px;background:#e3e7ec;border-radius:99px;overflow:hidden;flex:1}.bar>span{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}.progress-text{font-size:13px;font-weight:700;min-width:72px;text-align:right}
+.toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.toolbar button,.bottom-actions button,.modal-actions button{min-height:46px;border:1px solid var(--line);background:var(--card);border-radius:12px;font-weight:700;padding:8px 12px}.toolbar button.primary,.bottom-actions button.primary,.modal-actions button.primary{background:var(--accent);color:white;border-color:var(--accent)}
+main{padding:12px 12px 0;max-width:760px;margin:auto}
+.notice{background:#fff8e6;border:1px solid #f1d28c;border-radius:14px;padding:12px 14px;margin-bottom:12px;font-size:15px}.notice strong{color:#7a4700}
+.section{background:var(--card);border:1px solid var(--line);border-radius:16px;margin:0 0 12px;box-shadow:var(--shadow);overflow:hidden}.section summary{list-style:none;display:flex;gap:10px;align-items:center;min-height:58px;padding:12px 14px;font-weight:800;font-size:18px;cursor:pointer}.section summary::-webkit-details-marker{display:none}.section summary:after{content:"⌄";margin-left:auto;color:var(--sub);font-size:20px;transform:rotate(0);transition:.15s}.section[open] summary:after{transform:rotate(180deg)}.section-count{font-size:12px;color:var(--sub);font-weight:700;background:#f0f2f5;border-radius:999px;padding:4px 8px}.section-body{padding:0 10px 12px}
+.task{border-top:1px solid var(--line);padding:12px 2px}.task.hidden-by-filter{display:none!important}.task.done{opacity:.6}.task.na{opacity:.55}.task-head{display:grid;grid-template-columns:48px 48px 1fr;gap:7px;align-items:start}.status-btn{width:48px;height:48px;border-radius:12px;border:1px solid var(--line);background:white;font-size:23px;font-weight:900}.status-btn.check.active{background:#e9f7ef;border-color:#a9d6ba;color:var(--ok)}.status-btn.na-btn.active{background:#eef0f3;border-color:#c8cdd4;color:var(--na)}.question{font-weight:700;padding-top:10px;min-width:0}.priority{display:inline-block;font-size:11px;color:#7a4700;background:#fff1c9;border-radius:99px;padding:2px 7px;margin-left:5px;vertical-align:2px}
+.answer-area{margin:9px 0 0 103px;display:grid;gap:8px}.answer-area label{font-size:13px;color:var(--sub);font-weight:700}.answer-area select,.answer-area input,.answer-area textarea,.measure-grid input{width:100%;min-height:46px;border:1px solid #cfd5dc;border-radius:10px;background:white;padding:10px 11px;color:var(--text)}.answer-area textarea{min-height:72px;resize:vertical}.measure-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.measure-grid .wide{grid-column:1/-1}.input-row{display:grid;grid-template-columns:1fr 74px;gap:8px;align-items:center}.unit{font-size:14px;color:var(--sub)}
+.branch{display:none;margin:9px 0 0 103px;padding:10px;border-left:4px solid #bfd4f6;background:#f5f9ff;border-radius:8px}.branch.show{display:block}.branch-title{font-weight:800;font-size:14px;margin-bottom:8px}.branch .task{border-top:1px solid #d6e3f7}.branch .task:first-of-type{border-top:0}.branch .task-head{grid-template-columns:44px 44px 1fr}.branch .status-btn{width:44px;height:44px}.branch .answer-area{margin-left:95px}
+.section-note{margin-top:10px}.section-note textarea{width:100%;min-height:90px;border:1px solid #cfd5dc;border-radius:10px;padding:10px 11px;background:#fbfcfd}.section-note label{display:block;font-size:13px;color:var(--sub);font-weight:800;margin-bottom:5px}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}.quick button{min-height:48px;border-radius:12px;border:1px solid var(--line);background:#fff;font-weight:800}.quick button.warn{border-color:#f0c36f;background:#fff8e6;color:#764800}
+.footer-note{font-size:13px;color:var(--sub);padding:6px 4px 20px}
+.bottom-actions{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(246,247,249,.97);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:9px 12px calc(9px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1.4fr;gap:8px}.bottom-actions button{min-height:50px}
+.modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.42);display:none;align-items:flex-end}.modal.show{display:flex}.modal-card{width:100%;max-height:88vh;background:white;border-radius:20px 20px 0 0;padding:14px 14px calc(14px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px}.modal-h{font-size:20px;font-weight:900}.modal textarea{width:100%;min-height:48vh;border:1px solid #cfd5dc;border-radius:12px;padding:12px;font-size:15px;line-height:1.55;resize:none}.modal-actions{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}.small{font-size:12px;color:var(--sub)}
+body.filter-pending .task.done,body.filter-pending .task.na{display:none}.empty{display:none;color:var(--sub);font-size:14px;padding:10px 6px}.section-body.no-visible>.empty{display:block}
+@media (max-width:430px){body{font-size:16px}.title{font-size:19px}.task-head{grid-template-columns:44px 44px 1fr}.status-btn{width:44px;height:44px}.answer-area{margin-left:95px}.branch{margin-left:95px}.measure-grid{grid-template-columns:1fr 1fr}}
+@media (prefers-color-scheme:dark){:root{--bg:#111315;--card:#1a1d20;--text:#f2f3f5;--sub:#aab0b8;--line:#30353b;--accent:#4f97ff;--shadow:none}html,body{background:var(--bg)}.sticky,.bottom-actions{background:rgba(17,19,21,.96)}.toolbar button,.quick button,.bottom-actions button,.modal-actions button,.status-btn,.answer-area select,.answer-area input,.answer-area textarea,.measure-grid input,.section-note textarea{background:#202429;color:var(--text);border-color:#3a4047}.notice{background:#2a2418;border-color:#594a26}.notice strong{color:#ffd07b}.section-count{background:#292d32}.branch{background:#182334;border-color:#3d6fae}.modal-card{background:#1a1d20}.priority{background:#493b13;color:#ffdf89}.photo-btn{background:#17263b;color:#8dbbff;border-color:#4f97ff}.photo-item{background:#202429}}
+
+.photo-tools{margin:9px 0 0 103px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.photo-btn.active{background:#1268e8;color:#fff}.photo-btn{min-height:46px;border:1px solid var(--accent);background:#eef5ff;border-radius:11px;padding:9px 14px;font-weight:900;color:var(--accent);display:inline-flex;align-items:center;gap:6px}.photo-hint{font-size:12px;color:var(--sub);font-weight:700}.photo-count{font-size:12px;color:var(--sub);font-weight:800}
+.photo-count{font-size:12px;color:var(--sub);font-weight:700}
+.photo-grid{margin:8px 0 0 103px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.photo-item{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#f3f5f7;aspect-ratio:1/1}
+.photo-item img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-del{position:absolute;top:5px;right:5px;width:30px;height:30px;border-radius:999px;border:0;background:rgba(0,0,0,.62);color:#fff;font-size:18px;font-weight:900;line-height:30px;padding:0}
+.voice-note{margin:0 0 12px;background:#eef6ff;border:1px solid #c9def8;border-radius:14px;padding:11px 13px;font-size:14px;color:var(--text)}
+@media (max-width:430px){.photo-tools,.photo-grid{margin-left:95px}.photo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+@media print{.sticky,.bottom-actions,.toolbar,.quick,.modal{display:none!important}body{padding:0;background:white;color:black}.section{break-inside:avoid;box-shadow:none}main{max-width:none}}
+</style>
+</head>
+<body>
+<header class="sticky">
+  <div class="title">内覧チェックリスト</div>
+  <div class="meta">現場確認用・iPhone向け</div>
+  <div class="progress-wrap"><div class="bar"><span id="progressBar"></span></div><div class="progress-text" id="progressText">0 / 0</div></div>
+  <div class="toolbar">
+    <button id="filterBtn" type="button">未確認だけ表示</button>
+    <button id="openAllBtn" type="button">すべて開く</button>
+  </div>
+</header>
+<main>
+  <div class="quick">
+    <button type="button" onclick="jumpTo('sec-b')">Bタイプへ</button>
+    <button type="button" class="warn" onclick="jumpTo('sec-life')">ライフラインへ</button>
+  </div>
+
+  <details class="section" id="sec-room" open>
+    <summary><span>① Aタイプ・採寸</span><span class="section-count"></span></summary>
+    <div class="section-body">
+      <div class="task" data-key="room_layout" data-photo="1" data-photo-autodone="1" data-label="部屋全体の広さ・使いやすさ"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">部屋全体の広さ・使いやすさ</div></div></div>
+      <div class="task" data-key="bed" data-photo="1" data-label="ベッド位置・通路幅"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">ベッドを置く場所・通路幅</div></div><div class="answer-area"><div class="measure-grid"><div><label>置ける幅</label><div class="input-row"><input id="bed_w" inputmode="decimal" placeholder="例 120"><span class="unit">cm</span></div></div><div><label>通路幅</label><div class="input-row"><input id="bed_pass" inputmode="decimal" placeholder="例 80"><span class="unit">cm</span></div></div></div></div></div>
+      <div class="task" data-key="curtain" data-photo="1" data-label="カーテンのサイズ"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">カーテンのサイズ</div></div><div class="answer-area"><div class="measure-grid"><div><label>幅</label><div class="input-row"><input id="curtain_w" inputmode="decimal"><span class="unit">cm</span></div></div><div><label>高さ</label><div class="input-row"><input id="curtain_h" inputmode="decimal"><span class="unit">cm</span></div></div></div></div></div>
+      <div class="task" data-key="storage" data-photo="1" data-label="収納の大きさ"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">収納の大きさ・奥行き</div></div><div class="answer-area"><input id="storage_note" placeholder="幅・奥行き・高さなど"></div></div>
+      <div class="task" data-key="appliance_space" data-photo="1" data-label="冷蔵庫・電子レンジ・テレビの置き場所"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">冷蔵庫・電子レンジ・テレビの置き場所</div></div><div class="answer-area"><textarea id="appliance_note" placeholder="冷蔵庫：幅○cm／奥行○cm など"></textarea></div></div>
+      <div class="task" data-key="outlets" data-photo="1" data-photo-autodone="1" data-label="コンセント・テレビ端子"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">コンセントの位置・数／テレビ端子</div></div><div class="answer-area"><input id="outlet_note" placeholder="例：ベッド側2口、TV端子は窓側"></div></div>
+      <div class="task" data-key="washer" data-photo="1" data-label="洗濯機置場"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">洗濯機置場の有無・サイズ</div></div><div class="answer-area"><select id="washer_yes"><option value="">未入力</option><option>あり</option><option>なし</option></select><input id="washer_size" placeholder="サイズ・防水パン寸法など"></div></div>
+      <div class="task" data-key="bath_kitchen" data-photo="1" data-photo-autodone="1" data-label="浴室・ミニキッチン"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">浴室・ミニキッチンの有無・仕様</div></div><div class="answer-area"><textarea id="bath_kitchen_note" placeholder="浴室／キッチン設備をメモ"></textarea></div></div>
+      <div class="task" data-key="fixtures" data-photo="1" data-photo-autodone="1" data-label="備え付け設備・ナースコール"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">照明・エアコン・ナースコール等の備え付け</div></div><div class="answer-area"><textarea id="fixtures_note" placeholder="確認した設備・位置"></textarea></div></div>
+      <div class="task" data-key="photos" data-label="必要箇所の写真を撮ったか"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">必要箇所の写真がそろっているか最終確認</div></div></div>
+      <div class="section-note"><label>部屋メモ</label><textarea id="note_room" placeholder="気になったことを自由にメモ"></textarea></div><div class="empty">このセクションはすべて確認済みです。</div>
+    </div>
+  </details>
+
+  <details class="section" id="sec-b">
+    <summary><span>② Bタイプ</span><span class="section-count"></span></summary>
+    <div class="section-body">
+      <div class="task" data-key="b_chance" data-label="Bタイプへ変更できる可能性"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">現時点でBタイプへ変更できる可能性 <span class="priority">重要</span></div></div><div class="answer-area"><select id="b_chance"><option value="">未入力</option><option>可能性あり</option><option>現時点では空きなし</option><option>見込み不明</option><option>変更可能</option></select><textarea id="b_chance_note" placeholder="予約者の状況・見込み時期など"></textarea></div></div>
+      <div class="task" data-key="b_view" data-label="Bタイプも内覧できるか"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">今日、Bタイプも内覧できるか <span class="priority">重要</span></div></div><div class="answer-area"><select id="b_view" data-branch="bView"><option value="">未入力</option><option value="yes">はい</option><option value="no">いいえ</option></select></div></div>
+      <div class="branch" id="branch-bView-yes"><div class="branch-title">Bタイプを見られる場合</div>
+        <div class="task" data-key="b_compare" data-photo="1" data-label="AタイプとBタイプを比較"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">広さ・浴室・キッチン・洗濯・収納・家具配置を比較</div></div><div class="answer-area"><textarea id="b_compare_note" placeholder="Aタイプとの違い"></textarea></div></div>
+        <div class="task" data-key="b_cost" data-label="A/Bの費用・条件差"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">月額費用など条件の違い</div></div><div class="answer-area"><input id="b_cost_note" placeholder="差額・条件など"></div></div>
+      </div>
+      <div class="branch" id="branch-bView-no"><div class="branch-title">Bタイプを見られない場合</div>
+        <div class="task" data-key="b_material" data-photo="1" data-photo-autodone="1" data-label="Bタイプの間取り・設備資料"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">間取り・設備資料を見せてもらえるか</div></div></div>
+      </div>
+      <div class="task" data-key="b_timing" data-label="AタイプからBタイプへ変更できる期限・連絡方法"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">空きが出た場合の連絡方法／いつ頃まで変更できるか</div></div><div class="answer-area"><textarea id="b_timing_note" placeholder="連絡方法・期限・判断タイミング"></textarea></div></div>
+      <div class="section-note"><label>Bタイプメモ</label><textarea id="note_b"></textarea></div><div class="empty">このセクションはすべて確認済みです。</div>
+    </div>
+  </details>
+
+  <details class="section" id="sec-life">
+    <summary><span>③ 電気・ガス・水道・通信</span><span class="section-count"></span></summary>
+    <div class="section-body">
+      <div class="task" data-key="electric_day1" data-label="Aタイプは入居初日から電気を使えるか"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">Aタイプは入居初日から電気を使えるか <span class="priority">重要</span></div></div><div class="answer-area"><select id="electric_day1" data-branch="electricDay"><option value="">未入力</option><option value="yes">はい</option><option value="no">いいえ</option></select></div></div>
+      <div class="task" data-key="electric_contract" data-label="Aタイプの電気は個人契約が必要か"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">電気は個人契約が必要か</div></div><div class="answer-area"><select id="electric_contract" data-branch="electricContract"><option value="">未入力</option><option value="individual">個人契約</option><option value="facility">施設側／個人契約不要</option><option value="unknown">未確定</option></select></div></div>
+      <div class="branch" id="branch-electricContract-individual"><div class="branch-title">個人契約の場合</div><div class="task" data-key="electric_how" data-label="電気の申込先・期限・必要情報"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">申込先・申込期限・施設から必要な情報</div></div><div class="answer-area"><textarea id="electric_how_note"></textarea></div></div></div>
+      <div class="branch" id="branch-electricContract-facility"><div class="branch-title">個人契約不要の場合</div><div class="task" data-key="electric_bill" data-label="電気料金の請求方法"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">使用料はどのように請求されるか</div></div><div class="answer-area"><input id="electric_bill_note"></div></div></div>
+
+      <div class="task" data-key="water_day1" data-label="Aタイプは入居初日から水道を使えるか"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">Aタイプは入居初日から水道を使えるか <span class="priority">重要</span></div></div><div class="answer-area"><select id="water_day1"><option value="">未入力</option><option value="yes">はい</option><option value="no">いいえ</option></select></div></div>
+      <div class="task" data-key="water_contract" data-label="Aタイプの水道は個人契約が必要か"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">水道は個人契約が必要か</div></div><div class="answer-area"><select id="water_contract" data-branch="waterContract"><option value="">未入力</option><option value="individual">個人契約</option><option value="facility">施設側／個人契約不要</option><option value="unknown">未確定</option></select></div></div>
+      <div class="branch" id="branch-waterContract-individual"><div class="branch-title">個人契約の場合</div><div class="task" data-key="water_how" data-label="水道の申込先・期限・必要情報"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">申込先・申込期限・必要情報</div></div><div class="answer-area"><textarea id="water_how_note"></textarea></div></div></div>
+      <div class="branch" id="branch-waterContract-facility"><div class="branch-title">個人契約不要の場合</div><div class="task" data-key="water_bill" data-label="水道料金の請求方法"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">使用料はどのように請求されるか</div></div><div class="answer-area"><input id="water_bill_note"></div></div></div>
+
+      <div class="task" data-key="gas_a" data-label="Aタイプのガス個別契約・ガス設備"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">Aタイプはガス個別契約不要か／ガス設備はあるか <span class="priority">重要</span></div></div><div class="answer-area"><textarea id="gas_a_note" placeholder="契約要否・使用設備"></textarea></div></div>
+      <div class="task" data-key="gas_b" data-label="Bタイプのガス契約と開始期限"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">Bタイプへ変更した場合のガス契約・申込期限</div></div><div class="answer-area"><textarea id="gas_b_note" placeholder="個別契約要否・いつまでに申し込むか"></textarea></div></div>
+      <div class="task" data-key="internet" data-label="インターネット回線・工事"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">利用できる回線／部屋まで来ているか／工事要否</div></div><div class="answer-area"><select id="internet_install" data-branch="internetInstall"><option value="">工事要否：未入力</option><option value="yes">工事が必要</option><option value="no">工事不要</option><option value="unknown">不明</option></select><textarea id="internet_note" placeholder="回線名・設備状況など"></textarea></div></div>
+      <div class="branch" id="branch-internetInstall-yes"><div class="branch-title">工事が必要な場合</div><div class="task" data-key="internet_rule" data-label="インターネット工事の施設ルール"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">施設への事前連絡方法・工事可能日時・ルール</div></div><div class="answer-area"><textarea id="internet_rule_note"></textarea></div></div></div>
+      <div class="section-note"><label>ライフラインメモ</label><textarea id="note_life"></textarea></div><div class="empty">このセクションはすべて確認済みです。</div>
+    </div>
+  </details>
+
+  <details class="section" id="sec-docs">
+    <summary><span>④ 契約・提出書類</span><span class="section-count"></span></summary>
+    <div class="section-body">
+      <div class="task" data-key="contract_date" data-label="契約日"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">契約日（10/17〜19）を相談</div></div><div class="answer-area"><select id="contract_date"><option value="">未定</option><option>10月17日（土）</option><option>10月18日（日）</option><option>10月19日（月）</option><option>別日を相談</option></select><input id="contract_date_note" placeholder="時間・補足"></div></div>
+      <div class="task" data-key="doc_status" data-label="提出書類の不足・原本/コピー"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">提出書類に不足がないか／原本・コピーを最終確認</div></div><div class="answer-area"><textarea id="doc_status_note" placeholder="不足書類・注意点"></textarea></div></div>
+      <div class="task" data-key="insurance" data-label="マイナ保険証利用時の提出書類"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">マイナ保険証の場合、「医療保険証コピー」の代わりに何を出すか <span class="priority">重要</span></div></div><div class="answer-area"><select id="insurance_doc" data-branch="insuranceDoc"><option value="">未入力</option><option value="qual">資格情報のお知らせ</option><option value="myna">マイナポータルの資格情報印刷</option><option value="other">その他</option></select></div></div>
+      <div class="branch" id="branch-insuranceDoc-qual"><div class="branch-title">資格情報のお知らせの場合</div><div class="task" data-key="insurance_qual_copy" data-label="資格情報のお知らせはコピーでよいか"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">コピーでよいか確認</div></div></div></div>
+      <div class="branch" id="branch-insuranceDoc-myna"><div class="branch-title">マイナポータルの場合</div><div class="task" data-key="insurance_myna_print" data-label="マイナポータル資格情報は印刷でよいか"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">印刷したものでよいか確認</div></div></div></div>
+      <div class="branch" id="branch-insuranceDoc-other"><div class="branch-title">その他の場合</div><div class="task" data-key="insurance_other" data-label="必要な医療保険書類の正式名称・取得先"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">必要書類の正式名称・どこから取得するか</div></div><div class="answer-area"><textarea id="insurance_other_note"></textarea></div></div></div>
+      <div class="task" data-key="movein_deadline" data-label="11月の入居日をいつまでに決めるか"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">11月の入居日をいつまでに決める必要があるか</div></div><div class="answer-area"><input id="movein_deadline_note" placeholder="期限"></div></div>
+      <div class="task" data-key="key_date" data-label="鍵の受取時期"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">鍵はいつ受け取れるか</div></div><div class="answer-area"><input id="key_date_note"></div></div>
+      <div class="section-note"><label>契約・書類メモ</label><textarea id="note_docs"></textarea></div><div class="empty">このセクションはすべて確認済みです。</div>
+    </div>
+  </details>
+
+  <details class="section" id="sec-move">
+    <summary><span>⑤ 引越し・荷物搬入</span><span class="section-count"></span></summary>
+    <div class="section-body">
+      <div class="task" data-key="move_guide" data-photo="1" data-photo-autodone="1" data-label="正式な引越し案内を受け取る"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">正式な「引越しの案内」を受け取る <span class="priority">重要</span></div></div></div>
+      <div class="task" data-key="move_dates" data-label="搬入可能日・申込期限・時間帯"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">10/24以降の搬入可能日／申込期限／時間帯</div></div><div class="answer-area"><textarea id="move_dates_note"></textarea></div></div>
+      <div class="task" data-key="move_route" data-photo="1" data-photo-autodone="1" data-label="トラック・搬入口・エレベーター・台車・養生"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">トラック停車／搬入口／居室までの経路／エレベーター／台車／養生</div></div><div class="answer-area"><textarea id="move_route_note"></textarea></div></div>
+      <div class="task" data-key="art_coord" data-label="アート引越センターとの調整方法"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">アート引越センターとの調整方法</div></div><div class="answer-area"><textarea id="art_coord_note"></textarea></div></div>
+      <div class="task" data-key="other_mover" data-label="他社引越し業者を使う場合の手続き"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">他社を利用する場合の手続き／誰がアートへ連絡するか</div></div><div class="answer-area"><textarea id="other_mover_note"></textarea></div></div>
+      <div class="task" data-key="family_move" data-label="家族で荷物を運ぶ場合のルール"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">家族・自家用車で荷物を運ぶ場合のルール</div></div><div class="answer-area"><select id="family_move" data-branch="familyMove"><option value="">未入力</option><option value="yes">家族搬入可</option><option value="no">家族搬入不可</option></select></div></div>
+      <div class="branch" id="branch-familyMove-yes"><div class="branch-title">家族搬入できる場合</div><div class="task" data-key="family_parking" data-label="家族搬入の一時停車・日時予約"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">一時停車場所／家族搬入でも日時予約が必要か</div></div><div class="answer-area"><textarea id="family_parking_note"></textarea></div></div></div>
+      <div class="section-note"><label>引越しメモ</label><textarea id="note_move"></textarea></div><div class="empty">このセクションはすべて確認済みです。</div>
+    </div>
+  </details>
+
+  <details class="section" id="sec-start">
+    <summary><span>⑥ 入居開始日の実務</span><span class="section-count"></span></summary>
+    <div class="section-body">
+      <div class="task" data-key="rent_start" data-label="家賃発生日と入居日の関係"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">家賃発生日と実際の入居日の関係</div></div><div class="answer-area"><textarea id="rent_start_note"></textarea></div></div>
+      <div class="task" data-key="movein_time" data-label="入居日の何時から部屋を使えるか"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">入居日の何時から部屋を使えるか</div></div><div class="answer-area"><input id="movein_time_note"></div></div>
+      <div class="task" data-key="pre_delivery" data-label="荷物・家具家電を事前搬入・設置できるか"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">荷物だけ先に入れる／家具・家電を事前設置できるか</div></div><div class="answer-area"><textarea id="pre_delivery_note"></textarea></div></div>
+      <div class="task" data-key="pre_power" data-label="冷蔵庫等を事前通電できるか"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">冷蔵庫などを入居前に通電してよいか</div></div><div class="answer-area"><input id="pre_power_note"></div></div>
+      <div class="task" data-key="day1_process" data-label="入居初日の施設側手続き"><div class="task-head"><button class="status-btn check">✓</button><button class="status-btn na-btn">―</button><div class="question">入居初日に必要な施設側の手続き</div></div><div class="answer-area"><textarea id="day1_process_note"></textarea></div></div>
+      <div class="section-note"><label>入居日メモ</label><textarea id="note_start"></textarea></div><div class="empty">このセクションはすべて確認済みです。</div>
+    </div>
+  </details>
+
+  <div class="footer-note">※ 入力内容はこの端末のブラウザ内に自動保存します。写真はiPhone標準カメラで撮影し、戻ったら該当項目の「写真で記録」をタップしてください。最後に「GPT用まとめ」でコピー／共有できます。</div>
+</main>
+
+<div class="bottom-actions">
+  <button type="button" id="pendingBottom">未確認を見る</button>
+  <button type="button" class="primary" id="summaryBtn">GPT用まとめ</button>
+</div>
+
+<div class="modal" id="summaryModal" aria-hidden="true">
+  <div class="modal-card">
+    <div class="modal-h">GPT用まとめ</div>
+    <div class="small">この文章をChatGPTへ貼り付ければ、内覧結果の整理・次のToDo作成に使えます。</div>
+    <textarea id="summaryText"></textarea>
+    <div class="modal-actions"><button id="closeModal">閉じる</button><button id="shareSummary">共有</button><button class="primary" id="copySummary">コピー</button></div>
+  </div>
+</div>
+
+<script>
+(()=>{
+const STORAGE='nairan-checklist-public-v1';
+let state={status:{},values:{},photos:{},updatedAt:null};
+try{const s=localStorage.getItem(STORAGE);if(s)state=Object.assign(state,JSON.parse(s));}catch(e){}
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+function save(){state.updatedAt=new Date().toISOString();try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(e){} updateAll();}
+function statusOf(task){return state.status[task.dataset.key]||'pending'}
+function setStatus(task,val){const key=task.dataset.key;state.status[key]=(state.status[key]===val?'pending':val);save()}
+function applyTask(task){const st=statusOf(task);task.classList.toggle('done',st==='done');task.classList.toggle('na',st==='na');$('.check',task)?.classList.toggle('active',st==='done');$('.na-btn',task)?.classList.toggle('active',st==='na')}
+function photoTaken(task){return !!state.photos[task.dataset.key]}
+function renderPhotoMarker(task){
+  if(!task.dataset.photo)return;
+  let tools=$('.photo-tools',task);
+  if(!tools){
+    tools=document.createElement('div');tools.className='photo-tools';
+    tools.innerHTML='<button type="button" class="photo-btn"></button><span class="photo-count"></span><span class="photo-hint">標準カメラで撮影後にタップ</span>';
+    task.appendChild(tools);
+  }
+  const btn=$('.photo-btn',tools),label=$('.photo-count',tools),taken=photoTaken(task);
+  btn.textContent=taken?'📷 撮影済み':'📷 写真で記録';
+  label.textContent=taken?'撮影済み':'未撮影';
+  btn.classList.toggle('active',taken);
+  if(!btn.dataset.bound){
+    btn.dataset.bound='1';
+    btn.addEventListener('click',()=>{
+      const key=task.dataset.key;state.photos[key]=!state.photos[key];
+      if(state.photos[key]&&task.dataset.photoAutodone==='1'&&statusOf(task)==='pending')state.status[key]='done';
+      save();renderPhotoMarker(task);
+    });
+  }
+}
+function initPhotos(){for(const t of $$('.task[data-photo]'))renderPhotoMarker(t);}
+$$('.task').forEach(task=>{applyTask(task);$('.check',task)?.addEventListener('click',()=>setStatus(task,'done'));$('.na-btn',task)?.addEventListener('click',()=>setStatus(task,'na'))});
+$$('input,select,textarea').forEach(el=>{if(el.id&&state.values[el.id]!=null)el.value=state.values[el.id];const ev=el.tagName==='SELECT'?'change':'input';el.addEventListener(ev,()=>{if(el.id)state.values[el.id]=el.value;save();if(el.dataset.branch)updateBranches();});});
+// iPhone: 入力欄以外をタップしたらキーボードを閉じる
+document.addEventListener('pointerdown',e=>{const a=document.activeElement;if(!a||!['INPUT','TEXTAREA'].includes(a.tagName))return;if(e.target===a||e.target.closest('input,textarea,select,label'))return;a.blur();},{passive:true});
+function taskActive(t){const branch=t.closest('.branch');return !branch||branch.classList.contains('show')}
+function activeTasks(root=document){return $$('.task',root).filter(taskActive)}
+function updateProgress(){const tasks=activeTasks();const total=tasks.length,done=tasks.filter(t=>statusOf(t)!=='pending').length;$('#progressText').textContent=`${done} / ${total}`;$('#progressBar').style.width=(total?done/total*100:0)+'%';$$('.section').forEach(sec=>{const ts=activeTasks(sec);const d=ts.filter(t=>statusOf(t)!=='pending').length;$('.section-count',sec).textContent=`${d}/${ts.length}`;const body=$('.section-body',sec);if(body){const vis=ts.filter(t=>statusOf(t)==='pending');body.classList.toggle('no-visible',document.body.classList.contains('filter-pending')&&vis.length===0)}})}
+function updateBranches(){
+  $$('.branch').forEach(b=>b.classList.remove('show'));
+  $$('[data-branch]').forEach(el=>{const key=el.dataset.branch,v=el.value;if(!v)return;const branch=$(`#branch-${key}-${CSS.escape(v)}`);if(branch)branch.classList.add('show')});
+  updateProgress();
+}
+function updateAll(){$$('.task').forEach(t=>{applyTask(t);if(t.dataset.photo)renderPhotoMarker(t)});updateBranches();updateProgress()}
+updateBranches();initPhotos();updateAll();
+let filtered=false;function setFilter(v){filtered=v;document.body.classList.toggle('filter-pending',v);$('#filterBtn').textContent=v?'すべて表示':'未確認だけ表示';$('#pendingBottom').textContent=v?'すべて表示':'未確認を見る';updateProgress();}
+$('#filterBtn').onclick=()=>setFilter(!filtered);$('#pendingBottom').onclick=()=>setFilter(!filtered);
+$('#openAllBtn').onclick=()=>{$$('.section').forEach(d=>d.open=true)};
+window.jumpTo=(id)=>{const el=document.getElementById(id);el.open=true;el.scrollIntoView({behavior:'smooth',block:'start'})};
+function collectValues(task){const out=[];$$('input,select,textarea',task).forEach(el=>{if(!el.id||!el.value)return;let label='';const lab=el.previousElementSibling;if(lab&&lab.tagName==='LABEL')label=lab.textContent.trim();if(!label)label=el.getAttribute('placeholder')||'';let val=el.value;if(el.tagName==='SELECT')val=el.options[el.selectedIndex]?.text||val;out.push((label?label+': ':'')+val)});return out}
+function sectionSummary(sec){const title=$('summary span',sec)?.textContent.trim()||'';const lines=[];$$('.task',sec).forEach(task=>{if(!taskActive(task))return;const st=statusOf(task);const label=task.dataset.label||$('.question',task)?.textContent.trim()||'';const vals=collectValues(task);const photoTxt=photoTaken(task)?'｜写真撮影済み':'';if(st==='done')lines.push(`- [確認済] ${label}${vals.length?'｜'+vals.join('／'):''}${photoTxt}`);else if(st==='na')lines.push(`- [該当なし] ${label}${photoTxt}`);else if(photoTaken(task))lines.push(`- [未確認・写真あり] ${label}`);});
+  const note=$('.section-note textarea',sec);if(note&&note.value.trim())lines.push(`- [メモ] ${note.value.trim()}`);
+  const pending=activeTasks(sec).filter(t=>statusOf(t)==='pending').map(t=>t.dataset.label||$('.question',t)?.textContent.trim()||'').filter(Boolean);
+  if(pending.length)lines.push('  未確認: '+pending.join(' / '));
+  return lines.length?`■ ${title}\n${lines.join('\n')}`:'';
+}
+function makeSummary(){const blocks=$$('.section').map(sectionSummary).filter(Boolean);const all=activeTasks(),done=all.filter(t=>statusOf(t)!=='pending').length;const pending=all.filter(t=>statusOf(t)==='pending').map(t=>t.dataset.label||'').filter(Boolean);return `【内覧結果】\n確認状況：${done}/${all.length}\n\n${blocks.join('\n\n')}\n\n■ 全体の未確認\n${pending.length?pending.map(x=>'- '+x).join('\n'):'なし'}\n\nこの内容をもとに、確定事項・未確認事項・次にやることを整理してください。`;}
+function openSummary(){const t=makeSummary();$('#summaryText').value=t;$('#summaryModal').classList.add('show');$('#summaryModal').setAttribute('aria-hidden','false')}
+$('#summaryBtn').onclick=openSummary;$('#closeModal').onclick=()=>{$('#summaryModal').classList.remove('show');$('#summaryModal').setAttribute('aria-hidden','true')};
+$('#summaryModal').addEventListener('click',e=>{if(e.target===$('#summaryModal'))$('#closeModal').click()});
+async function copyText(){const t=$('#summaryText').value;try{await navigator.clipboard.writeText(t);alert('GPT用まとめをコピーしました');}catch(e){const ta=$('#summaryText');ta.focus();ta.select();try{document.execCommand('copy');alert('GPT用まとめをコピーしました');}catch(_){alert('コピーできませんでした。本文を長押ししてコピーしてください。')}}}
+$('#copySummary').onclick=copyText;
+$('#shareSummary').onclick=async()=>{const text=$('#summaryText').value;if(navigator.share){try{await navigator.share({title:'内覧結果',text});}catch(e){}}else{copyText()}};
+})();
+</script>
+</body>
+</html>
